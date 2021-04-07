@@ -33,7 +33,9 @@ pub enum Error {
   IOError(std::io::Error),
 
   /// Not supported or not implemented yet (like for Windows 10).
-  NotImplemented
+  NotImplemented,
+
+  LZXPressError(lzxpress::error::Error),
 }
 
 /// Classic custom Result type.
@@ -42,9 +44,12 @@ pub type Result<T> = std::result::Result<T, Error>;
 impl fmt::Display for Error {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     match *self {
-      Error::UnknownFormatVersion(_v) => write!(f, "Unknown prefetch format version."),
+      Error::UnknownFormatVersion(v) => write!(f, "Unknown prefetch format version {:02x}", v),
       Error::NotPrefetchFile => write!(f, "This is not a prefetch file"),
       Error::IOError(ref e) => e.fmt(f),
+      Error::LZXPressError(lzxpress::error::Error::MemLimit) => write!(f, "LZXPress: not enough memory"),
+      Error::LZXPressError(lzxpress::error::Error::CorruptedData) => write!(f, "LZXPress: corrupted data"),
+      Error::LZXPressError(lzxpress::error::Error::Other) => write!(f, "LZXPress: unknown error"),
       Error::NotImplemented => write!(f, "Not implemented yet")
   }
   }
@@ -56,6 +61,9 @@ impl std::error::Error for Error {
       Error::UnknownFormatVersion(_v) => "Unknown prefetch format version.",
       Error::NotPrefetchFile => "This is not a prefetch file",
       Error::IOError(ref e) => e.description(),
+      Error::LZXPressError(lzxpress::error::Error::MemLimit) => "LZXPress: not enough memory",
+      Error::LZXPressError(lzxpress::error::Error::CorruptedData) => "LZXPress: corrupted data",
+      Error::LZXPressError(lzxpress::error::Error::Other) => "LZXPress: unknown error",
       Error::NotImplemented => "Not implemented yet"
     }
   }

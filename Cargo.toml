@@ -26,3 +26,4 @@ repository = "https://github.com/no-sec/libprefetch.git"
 name = "libprefetch"
 
 [dependencies]
+rust-lzxpress = "0.5.0"

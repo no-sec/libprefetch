@@ -216,15 +216,29 @@ impl Prefetch {
   /// ```
   pub fn new<T>(mut src: T) -> super::Result<Prefetch>
     where T: std::io::Read {
+      let mut buf = Vec::new();
+      src.read_to_end(&mut buf).map_err(super::error::Error::IOError)?;
+      if &buf[0..4] == b"MAM\x04" {
 
-    let mut buf = vec![0u8; super::constants::HEADER_LENGTH];
-    src.read_exact(&mut buf).map_err(super::error::Error::IOError)?;
-    let (header, parser) = super::header::Header::new(&buf)?;
-    src.read_to_end(&mut buf).map_err(super::error::Error::IOError)?;
-    let result = parser.parse(&buf)?;
+        let uncompressed_length = u32::from_le_bytes([buf[4], buf[5], buf[6], buf[7]]);
+        println!("uncompressed length: {:08x}", uncompressed_length);
+
+        buf = match lzxpress::data::decompress(&buf[8..]) {
+          Ok(b) => b,
+          Err(e)  => return Err(super::error::Error::LZXPressError(e))
+        };
+      }
+
+      let header = &buf[0..super::constants::HEADER_LENGTH];
+      println!("header length: {}", header.len());
+
+      let (header, parser) = super::header::Header::new(header)?;
+
+      let data = &buf[..];
+      println!("data length: {}", data.len());
+      let result = parser.parse(&data)?;
     Ok(Prefetch {
       header: header,
-      //parser: parser,
       parser_result: result
     })
   }
