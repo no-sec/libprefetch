@@ -13,14 +13,14 @@
 [package]
 name = "libprefetch"
 version = "0.1.1"
-authors = ["Thomas BAILLEUX <thomas@bailleux.me>"]
+authors = ["Jan Starke <jan.starke@t-systems.com>", "Thomas BAILLEUX <thomas@bailleux.me>"]
 description = "Forensic library; parser and reader for Microsoft Prefetch File"
-homepage = "https://github.com/zadlg/libprefetch"
+homepage = "https://github.com/no-sec/libprefetch"
 readme = "README.md"
 keywords = ["forensic", "library", "parser", "parsing", "prefetch"]
 categories = ["parser-implementations", "parsing"]
-license = "WTFPL"
-repository = "https://github.com/zadlg/libprefetch.git"
+license = "GPLv3"
+repository = "https://github.com/no-sec/libprefetch.git"
 
 [lib]
 name = "libprefetch"
