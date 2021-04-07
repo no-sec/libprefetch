@@ -101,4 +101,4 @@ Release notes are available in [RELEASES.md](RELEASES.md).
 
 ## License
 
-<http://www.wtfpl.net/about/>
+<https://www.gnu.org/licenses/gpl-3.0.html>
