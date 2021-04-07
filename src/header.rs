@@ -26,9 +26,9 @@ pub(crate) struct Header {
 impl Header {
 
   pub(crate) fn new(content: &[u8]) -> super::Result<(Header,
-  Box<super::parser::Parser>)> {
+  Box<dyn super::parser::Parser>)> {
     use super::util::FromSlice;
-    let result: super::Result<(Header, Box<super::parser::Parser>)>;
+    let result: super::Result<(Header, Box<dyn super::parser::Parser>)>;
     if content.len() < super::constants::HEADER_LENGTH {
       result = Err(super::error::Error::NotPrefetchFile);
     } else {

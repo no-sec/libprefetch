@@ -12,9 +12,11 @@
 //
 //  0. You just DO WHAT THE FUCK YOU WANT TO.
 //
-// Author: zadig <thomas chr(0x40) bailleux.me>
+// Authors: zadig <thomas chr(0x40) bailleux.me>
+//          jasa <jan.starke (0x40) t-systems.com>
 
 use std;
+use std::fmt;
 
 /// Errors related to the process of parsing and reading.
 #[derive(Debug)]
@@ -36,7 +38,18 @@ pub enum Error {
 /// Classic custom Result type.
 pub type Result<T> = std::result::Result<T, Error>;
 
+impl fmt::Display for Error {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    match *self {
+      Error::UnknownFormatVersion(_v) => write!(f, "Unknown prefetch format version."),
+      Error::NotPrefetchFile => write!(f, "This is not a prefetch file"),
+      Error::IOError(ref e) => e.fmt(f),
+      Error::NotImplemented => write!(f, "Not implemented yet")
+  }
+  }
+}
 impl std::error::Error for Error {
+  #[allow(deprecated, deprecated_in_future)]
   fn description(&self) -> &str {
     match *self {
       Error::UnknownFormatVersion(_v) => "Unknown prefetch format version.",
@@ -46,17 +59,10 @@ impl std::error::Error for Error {
     }
   }
 
-  fn cause(&self) -> Option<&std::error::Error> {
+  fn cause(&self) -> Option<&dyn std::error::Error> {
     match *self {
       Error::IOError(ref e) => Some(e),
       _ => None
     }
-  }
-}
-
-impl std::fmt::Display for Error {
-  fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-    use std::error::Error;
-    write!(f, "{}", self.description())
   }
 }

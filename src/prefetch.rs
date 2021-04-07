@@ -36,7 +36,7 @@ pub enum FormatVersion {
 impl FormatVersion {
 
   pub(crate) fn new(value: u32)
-      -> super::Result<(FormatVersion, Box<super::parser::Parser>)> {
+      -> super::Result<(FormatVersion, Box<dyn super::parser::Parser>)> {
     match value {
       super::constants::FORMAT_WINDOWS_XP_2003
         => Ok((FormatVersion::WindowsXp2003,
@@ -93,7 +93,7 @@ impl std::fmt::Display for FormatVersion {
 
 pub struct Prefetch {
   header: super::header::Header,
-  parser: Box<super::parser::Parser>,
+  //parser: Box<super::parser::Parser>,
   parser_result: super::parser::ParserResult
 }
 
@@ -222,7 +222,7 @@ impl Prefetch {
     let result = parser.parse(&buf)?;
     Ok(Prefetch {
       header: header,
-      parser: parser,
+      //parser: parser,
       parser_result: result
     })
   }
